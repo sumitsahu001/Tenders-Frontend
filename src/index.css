@@ -1,0 +1,110 @@
+/* Dark theme variables */
+:root {
+  --color-bg: #181a1b;
+  --color-bg-secondary: #23272b;
+  --color-text: #f1f3f4;
+  --color-primary: #007bff;
+  --color-accent: #ffc107;
+  --color-border: #343a40;
+  --color-card: #23272b;
+  --color-hover: #212529;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+a, .btn-link {
+  color: var(--color-primary);
+  transition: color 0.2s;
+}
+a:hover, .btn-link:hover {
+  color: var(--color-accent);
+}
+
+.card, .navbar, .footer {
+  background: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-primary:hover {
+  background: var(--color-accent);
+  color: #181a1b;
+}
+
+.btn-success {
+  background: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+.btn-success:hover {
+  background: #218838;
+}
+
+.btn-danger {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+.btn-danger:hover {
+  background: #c82333;
+}
+
+input, textarea, select {
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: var(--color-bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+/* Visually hidden but focusable (for skip links) */
+.visually-hidden-focusable {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.visually-hidden-focusable:focus,
+.visually-hidden-focusable:active {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-accent);
+  color: #181a1b;
+  z-index: 1000;
+  border-radius: 6px;
+  outline: 2px solid var(--color-primary);
+}
+
+/* Responsive tweaks for mobile nav and layout */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+  .navbar-brand span {
+    font-size: 1.1rem;
+  }
+}

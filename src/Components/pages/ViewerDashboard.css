@@ -1,0 +1,17 @@
+.project-card {
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .project-card img {
+    height: 250px;
+    object-fit: cover;
+  }
+  
