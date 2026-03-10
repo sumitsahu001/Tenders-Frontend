@@ -1,9 +1,15 @@
+/**
+ * @file ContractorDashboard.jsx
+ * @description Contractor/Bidder dashboard. Displays relevant tenders and application trackers.
+ * Designed with a smart-feed approach for better user engagement.
+ * - Sumit Sahu
+ */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Helmet } from 'react-helmet-async';
 
-function Usercomponent() {
+function ContractorDashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -17,11 +23,11 @@ function Usercomponent() {
   return (
     <>
       <Helmet>
-        <title>User Dashboard - GovTenders Portal</title>
-        <meta name="description" content="User dashboard to view, apply, and track government tenders." />
+        <title>Contractor Dashboard - GovTenders Portal</title>
+        <meta name="description" content="Contractor dashboard to view, apply, and track government tenders." />
       </Helmet>
       <div className="container mt-4">
-        <h1 className="text-center text-primary">Government Tenders - User Dashboard</h1>
+        <h1 className="text-center text-primary">Government Tenders - Contractor Dashboard</h1>
 
         <div className="card shadow-sm mt-4" role="region" aria-label="Available Tenders">
           <div className="card-body">
@@ -51,4 +57,4 @@ function Usercomponent() {
   );
 }
 
-export default Usercomponent;
+export default ContractorDashboard;

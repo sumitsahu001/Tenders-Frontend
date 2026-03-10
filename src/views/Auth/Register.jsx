@@ -1,3 +1,9 @@
+/**
+ * @file Register.jsx
+ * @description Handles new user registration (Contractor / Government setup).
+ * Written with care to ensure scalable data ingestion.
+ * - Sumit Sahu
+ */
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
@@ -101,8 +107,8 @@ function Register() {
             <label>Role:</label>
             <select className="form-control" onChange={e => setRole(e.target.value)} value={role}>
               <option value="">Select Role</option>
-              <option value="user">Bidder</option>
-              <option value="admin">Admin</option>
+              <option value="contractor">Contractor (Bidder)</option>
+              <option value="government">Government Official</option>
             </select>
           </div>
 

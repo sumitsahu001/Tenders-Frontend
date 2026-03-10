@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { motion } from 'framer-motion';
 // Bootstrap and Bootstrap Icons are already globally imported in the project
 
 // This component is the centerpiece for the homepage, guiding users and admins
@@ -7,8 +8,11 @@ import { Helmet } from 'react-helmet-async';
 // accessible, SEO-friendly, and visually engaging, while matching the site's dark theme.
 function Centerpiece() {
   return (
-    <section
-      className="container my-5 py-4 px-3 rounded shadow-lg bg-dark text-light animate__animated animate__fadeIn"
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="container my-5 py-4 px-3 rounded shadow-lg bg-dark text-light"
       aria-labelledby="centerpiece-heading"
       tabIndex={0} // Allows keyboard users to focus this section
       style={{ outline: 'none' }}
@@ -24,7 +28,11 @@ function Centerpiece() {
       </h2>
       <div className="row g-4 align-items-stretch">
         {/* User Features Card */}
-        <div className="col-md-6">
+        <motion.div
+          className="col-md-6"
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
           <article className="card h-100 bg-secondary bg-opacity-75 border-0 shadow-sm position-relative user-card" aria-label="User Features">
             <div className="card-body">
               <h3 className="card-title h4 mb-3 d-flex align-items-center">
@@ -55,9 +63,13 @@ function Centerpiece() {
               </div>
             </div>
           </article>
-        </div>
+        </motion.div>
         {/* Admin Features Card */}
-        <div className="col-md-6">
+        <motion.div
+          className="col-md-6"
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
           <article className="card h-100 bg-secondary bg-opacity-75 border-0 shadow-sm position-relative admin-card" aria-label="Admin Features">
             <div className="card-body">
               <h3 className="card-title h4 mb-3 d-flex align-items-center">
@@ -88,7 +100,7 @@ function Centerpiece() {
               </div>
             </div>
           </article>
-        </div>
+        </motion.div>
       </div>
       {/* Real Problems & Unique Value Section */}
       <div className="row mt-5">
@@ -115,7 +127,7 @@ function Centerpiece() {
           </section>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

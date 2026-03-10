@@ -1,9 +1,15 @@
+/**
+ * @file Login.jsx
+ * @description Handles authentication and role-based redirect for the application.
+ * Manages secure token storage and role synchronization.
+ * - Sumit Sahu
+ */
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-function Login({ setRole }) { 
+function Login({ setRole }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,10 +44,13 @@ function Login({ setRole }) {
       setPassword('');
 
       // Redirect based on role
-      if (response.data.role === 'admin') {
-        navigate('/admin');
+      const userRole = response.data.role;
+      if (userRole === 'government') {
+        navigate('/government');
+      } else if (userRole === 'contractor') {
+        navigate('/contractor');
       } else {
-        navigate('/user');
+        navigate('/public-dashboard');
       }
 
       alert(response.data.message);

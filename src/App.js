@@ -6,7 +6,7 @@ import Content from './Components/Content';
 import Footer from './Components/Footer';
 import Main from './Main.js';
 import Centerpiece from './Components/Centerpiece.js';
-import ViewerDashboard from './Components/pages/viewerdashboard.jsx'; // NEW: Viewer Dashboard
+import PublicDashboard from './views/Public/PublicDashboard.jsx'; // MVC View: Public Dashboard
 
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -42,17 +42,17 @@ function App() {
     }
   }, [role]);
 
-  // 🚀 Auto-redirect viewer to dashboard after login
+  // 🚀 Auto-redirect public to dashboard after login
   useEffect(() => {
-    if (role === 'viewer') {
-      navigate('/viewer-dashboard');
+    if (role === 'public') {
+      navigate('/public-dashboard');
     }
   }, [role, navigate]);
 
   // ✅ Hide footer & carousel on certain pages
   const hideLayout =
-    location.pathname === '/viewer-dashboard' ||
-    location.pathname === '/admin-dashboard';
+    location.pathname === '/public-dashboard' ||
+    location.pathname === '/government-dashboard';
 
   return (
     <>
@@ -72,8 +72,8 @@ function App() {
           path="/"
           element={<Content text={contentText} setContentText={setContentText} />}
         />
-        <Route path="/viewer-dashboard" element={<ViewerDashboard />} />
-        {/* Add your admin dashboard route if exists */}
+        <Route path="/public-dashboard" element={<PublicDashboard />} />
+        {/* Add your government dashboard route if exists */}
       </Routes>
 
       {/* Show only if NOT on dashboard pages */}

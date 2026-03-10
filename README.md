@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+# Government Tenders Portal - Web Marketplace
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the **Government Tenders Portal**, a comprehensive B2B marketplace engineered for complete transparency in public procurement. This frontend repository is part of a larger ecosystem (with a private backend) designed to securely manage, bid on, and award government contracts.
 
-## Available Scripts
+> **Authored by**: Sumit Sahu  
+> **Status**: Active Development  
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 Project Overview & Flow
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This project moves away from traditional, bulky government portals and provides a modern, fast, and frictionless user experience divided into three distinct personas:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1.  **Public (Viewer)**:
+    *   **The Flow**: Frictionless browsing. Any citizen can search and view active government tenders directly without needing an account. It ensures transparency. They are only prompted to log in/register when they try to apply or download sensitive documents.
+2.  **Contractor (Bidder)**:
+    *   **The Flow**: Upon registration, contractors get a personalized dashboard. They can track their application statuses (`Draft ➔ Submitted ➔ Technical Evaluation ➔ Awarded`), view matched tenders based on their registered industry, and manage their compliance documents.
+3.  **Government Official (Admin)**:
+    *   **The Flow**: The authorized command center. Government officials use this interface to securely publish new tenders, manage deadlines, review incoming contractor bids, and publish addendums.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🏗️ Technical Architecture (Service-Dashboard Pattern)
 
-### `npm run build`
+To ensure this application scales cleanly and cleanly separates business logic from the view layer, the architecture relies on the following structural foundation:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+*   `/src/dashboards/`: Contains all main dashboard orchestrations (e.g., `Government`, `Contractor`, `Public`). Each directory encompasses the specific entry Dashboard file and all subsequent specialized UI pages.
+*   `/src/services/`: This isolates all backend functionality. Every API request, token authorization sequence, and data normalization operation is strictly written as an isolated Service function here to prevent component bloat and logic coupling.
+*   `/src/components/Shared`: Reusable micro-UI elements (Navigation, Footers, Data Tables) and logic wrappers like `ProtectedRoute.jsx`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 💡 What Makes This Project Different? (Features & Libraries)
 
-### `npm run eject`
+*   **Framer Motion Integration**: Instead of jarring transitions, this application utilizes **Framer Motion** for enterprise-grade UI interactions. Landing pages assemble via staggered mount physics, cards utilize spring physics on hover, providing a fluid premium UX often absent in B2B sites.
+*   **Role-Based Access Control (RBAC)**: Implemented secure, declarative routing using Higher-Order Components. A contractor simply cannot access government routes, preventing front-end data leaks.
+*   **Cross-Tab Authentication Syncing**: Built a real-time session synchronizer. If a user logs out in one tab, the React `window.storage` event handler instantly detects the state evaporation and logs out all concurrent tabs securely.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🧠 Key Learnings
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Building this application reinforced several advanced engineering concepts:
+1.  **Decoupling with Service Patterns**: Creating a `services/` directory proved that storing Axios/Fetch wrappers outside of React components makes the UI layer exclusively responsible for *displaying* rather than *fetching* data. This vastly improves testing scopes.
+2.  **UI Physics Rendering**: Integrating `framer-motion` shifted the design mindset from CSS keyframes to reactive component physics, producing an organic interactive flow efficiently.
+3.  **Real-World Product Flow**: Modeling strict multi-tenant access (Public vs Private Dashboarding) rather than a flat Single Page Application flow.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+### How to Run Locally
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Clone the repository.
+2. Run `npm install` to install dependencies (including `framer-motion`).
+3. Start the development server with `npm start`.

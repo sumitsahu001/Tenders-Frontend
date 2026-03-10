@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import "./ViewerDashboard.css"; // For custom styles
+import "./PublicDashboard.css"; // For custom styles
 
 // Import all images from assets/components
 import SmartCity from "../../assets/Smart-City.jpg";
@@ -159,11 +159,10 @@ function ViewerDashboard() {
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index}
-                className={`btn ${
-                  currentPage === index + 1
+                className={`btn ${currentPage === index + 1
                     ? "btn-primary"
                     : "btn-outline-primary"
-                } mx-1`}
+                  } mx-1`}
                 onClick={() => setCurrentPage(index + 1)}
               >
                 {index + 1}

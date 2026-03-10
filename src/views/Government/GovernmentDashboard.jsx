@@ -1,7 +1,13 @@
+/**
+ * @file GovernmentDashboard.jsx
+ * @description Central control panel for Government Officials to publish and manage tenders.
+ * Developed to simulate real-world B2B lifecycle and maintain total platform transparency.
+ * - Sumit Sahu
+ */
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-function Admin() {
+function GovernmentDashboard() {
   return (
     <>
       <Helmet>
@@ -40,4 +46,4 @@ function Admin() {
   );
 }
 
-export default Admin;
+export default GovernmentDashboard;
