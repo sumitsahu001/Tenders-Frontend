@@ -9,7 +9,7 @@ import ProtectedRoute from './Components/Shared/ProtectedRoute.jsx';
 function Main({ role, setRole }) {
   return (
     <Routes>
-      <Route path='/register' element={<Register />} />
+      <Route path='/register' element={<Register setRole={setRole} />} />
       <Route path='/login' element={<Login setRole={setRole} />} />
       <Route path='/logout' element={<Logout setRole={setRole} />} />
 
