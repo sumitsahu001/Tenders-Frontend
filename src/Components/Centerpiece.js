@@ -30,8 +30,7 @@ function Centerpiece() {
         {/* User Features Card */}
         <motion.div
           className="col-md-6"
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300 }}
+         
         >
           <article className="card h-100 bg-secondary bg-opacity-75 border-0 shadow-sm position-relative user-card" aria-label="User Features">
             <div className="card-body">
@@ -67,8 +66,7 @@ function Centerpiece() {
         {/* Admin Features Card */}
         <motion.div
           className="col-md-6"
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300 }}
+          
         >
           <article className="card h-100 bg-secondary bg-opacity-75 border-0 shadow-sm position-relative admin-card" aria-label="Admin Features">
             <div className="card-body">

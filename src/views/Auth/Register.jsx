@@ -4,11 +4,20 @@
  * Written with care to ensure scalable data ingestion.
  * - Sumit Sahu
  */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { locationData } from './locationData';
+import Select from 'react-select';
+import { showPopup } from '../../context/popupApi';
+import { getLocationSelectStyles } from './locationSelectStyles';
+import {
+  getCityOptions,
+  getCountryOptions,
+  getIsoCodeForCountryName,
+  getIsoCodeForStateName,
+  getStateOptions,
+} from './locationHelpers';
 
 function Register({ setRole }) {
   const [formData, setFormData] = useState({
@@ -145,6 +154,113 @@ function Register({ setRole }) {
     setErrors(prev => ({ ...prev, [name]: error }));
   };
 
+  const countryOptions = useMemo(() => getCountryOptions(), []);
+
+  const countryIso = useMemo(
+    () => getIsoCodeForCountryName(formData.country),
+    [formData.country]
+  );
+
+  const stateOptions = useMemo(
+    () => (countryIso ? getStateOptions(countryIso) : []),
+    [countryIso]
+  );
+
+  const stateIso = useMemo(
+    () => getIsoCodeForStateName(countryIso, formData.state),
+    [countryIso, formData.state]
+  );
+
+  const cityOptions = useMemo(
+    () =>
+      countryIso && stateIso ? getCityOptions(countryIso, stateIso) : [],
+    [countryIso, stateIso]
+  );
+
+  const countrySelectValue = useMemo(() => {
+    if (!formData.country || !countryIso) return null;
+    return { value: countryIso, label: formData.country };
+  }, [formData.country, countryIso]);
+
+  const stateSelectValue = useMemo(() => {
+    if (!formData.state || !stateIso) return null;
+    return { value: stateIso, label: formData.state };
+  }, [formData.state, stateIso]);
+
+  const citySelectValue = useMemo(() => {
+    if (!formData.city) return null;
+    return { value: formData.city, label: formData.city };
+  }, [formData.city]);
+
+  const handleCountrySelect = (opt) => {
+    const name = opt?.label ?? '';
+    setFormData((prev) => ({
+      ...prev,
+      country: name,
+      state: '',
+      city: '',
+    }));
+    setErrors((prev) => {
+      const next = { ...prev, state: '', city: '' };
+      if (touched.country) {
+        next.country = validateField('country', name);
+      }
+      return next;
+    });
+  };
+
+  const handleStateSelect = (opt) => {
+    const name = opt?.label ?? '';
+    setFormData((prev) => ({
+      ...prev,
+      state: name,
+      city: '',
+    }));
+    setErrors((prev) => {
+      const next = { ...prev, city: '' };
+      if (touched.state) {
+        next.state = validateField('state', name);
+      }
+      return next;
+    });
+  };
+
+  const handleCitySelect = (opt) => {
+    const name = opt?.label ?? '';
+    setFormData((prev) => ({ ...prev, city: name }));
+    setErrors((prev) => {
+      if (!touched.city) return prev;
+      return { ...prev, city: validateField('city', name) };
+    });
+  };
+
+  const countrySelectStyles = useMemo(
+    () =>
+      getLocationSelectStyles({
+        invalid: Boolean(touched.country && errors.country),
+        valid: Boolean(touched.country && !errors.country && formData.country),
+      }),
+    [touched.country, errors.country, formData.country]
+  );
+
+  const stateSelectStyles = useMemo(
+    () =>
+      getLocationSelectStyles({
+        invalid: Boolean(touched.state && errors.state),
+        valid: Boolean(touched.state && !errors.state && formData.state),
+      }),
+    [touched.state, errors.state, formData.state]
+  );
+
+  const citySelectStyles = useMemo(
+    () =>
+      getLocationSelectStyles({
+        invalid: Boolean(touched.city && errors.city),
+        valid: Boolean(touched.city && !errors.city && formData.city),
+      }),
+    [touched.city, errors.city, formData.city]
+  );
+
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     
@@ -177,8 +293,12 @@ function Register({ setRole }) {
 
         if (setRole) setRole(res.data.role);
 
-        alert('Registration Successful!');
-        
+        showPopup({
+          message: 'Registration successful. Welcome aboard.',
+          variant: 'success',
+          title: 'Account created',
+        });
+
         if (res.data.role === 'contractor') {
           navigate('/contractor');
         } else if (res.data.role === 'government') {
@@ -188,15 +308,17 @@ function Register({ setRole }) {
         }
       }
     } catch (error) {
-      alert(error.response?.data?.message || 'Something went wrong. Please try again.');
+      showPopup({
+        message:
+          error.response?.data?.message ||
+          'Something went wrong. Please try again.',
+        variant: 'error',
+        title: 'Registration failed',
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const countries = Object.keys(locationData);
-  const states = formData.country ? Object.keys(locationData[formData.country] || {}) : [];
-  const cities = (formData.country && formData.state) ? (locationData[formData.country][formData.state] || []) : [];
 
   return (
     <>
@@ -271,54 +393,89 @@ function Register({ setRole }) {
 
           
 
-          {/* Country */}
+          {/* Country — data: country-state-city; search: react-select (isSearchable) */}
           <div className="col-md-4">
-            <label className="form-label">Country</label>
-            <select 
-              name="country" 
-              className={`form-control ${touched.country && errors.country ? 'is-invalid' : ''} ${touched.country && !errors.country && formData.country ? 'is-valid' : ''}`}
-              onChange={handleChange}
+            <label className="form-label" htmlFor="register-country">
+              Country
+            </label>
+            <Select
+              inputId="register-country"
+              instanceId="register-country"
+              options={countryOptions}
+              value={countrySelectValue}
+              onChange={handleCountrySelect}
               onBlur={() => handleBlur('country')}
-              value={formData.country}
-            >
-              <option value="">Select Country</option>
-              {countries.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-            {touched.country && errors.country && <div className="invalid-feedback">{errors.country}</div>}
+              placeholder="Search or select country"
+              isClearable
+              isSearchable
+              styles={countrySelectStyles}
+              menuPortalTarget={document.body}
+              menuPosition="fixed"
+              noOptionsMessage={() => 'No countries match'}
+            />
+            {touched.country && errors.country && (
+              <div className="invalid-feedback d-block">{errors.country}</div>
+            )}
           </div>
 
           {/* State */}
           <div className="col-md-4">
-            <label className="form-label">State</label>
-            <select 
-              name="state" 
-              className={`form-control ${touched.state && errors.state ? 'is-invalid' : ''} ${touched.state && !errors.state && formData.state ? 'is-valid' : ''}`}
-              onChange={handleChange}
+            <label className="form-label" htmlFor="register-state">
+              State
+            </label>
+            <Select
+              inputId="register-state"
+              instanceId="register-state"
+              options={stateOptions}
+              value={stateSelectValue}
+              onChange={handleStateSelect}
               onBlur={() => handleBlur('state')}
-              value={formData.state}
-              disabled={!formData.country}
-            >
-              <option value="">Select State</option>
-              {states.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-            {touched.state && errors.state && <div className="invalid-feedback">{errors.state}</div>}
+              placeholder={
+                countryIso ? 'Search or select state' : 'Select a country first'
+              }
+              isDisabled={!countryIso}
+              isClearable
+              isSearchable
+              styles={stateSelectStyles}
+              menuPortalTarget={document.body}
+              menuPosition="fixed"
+              noOptionsMessage={() =>
+                countryIso ? 'No states match' : 'Pick a country first'
+              }
+            />
+            {touched.state && errors.state && (
+              <div className="invalid-feedback d-block">{errors.state}</div>
+            )}
           </div>
 
           {/* City */}
           <div className="col-md-4">
-            <label className="form-label">City</label>
-            <select 
-              name="city" 
-              className={`form-control ${touched.city && errors.city ? 'is-invalid' : ''} ${touched.city && !errors.city && formData.city ? 'is-valid' : ''}`}
-              onChange={handleChange}
+            <label className="form-label" htmlFor="register-city">
+              City
+            </label>
+            <Select
+              inputId="register-city"
+              instanceId="register-city"
+              options={cityOptions}
+              value={citySelectValue}
+              onChange={handleCitySelect}
               onBlur={() => handleBlur('city')}
-              value={formData.city}
-              disabled={!formData.state}
-            >
-              <option value="">Select City</option>
-              {cities.map(ct => <option key={ct} value={ct}>{ct}</option>)}
-            </select>
-            {touched.city && errors.city && <div className="invalid-feedback">{errors.city}</div>}
+              placeholder={
+                stateIso ? 'Search or select city' : 'Select a state first'
+              }
+              isDisabled={!stateIso}
+              isClearable
+              isSearchable
+              styles={citySelectStyles}
+              menuPortalTarget={document.body}
+              menuPosition="fixed"
+              noOptionsMessage={() =>
+                stateIso ? 'No cities match' : 'Pick a state first'
+              }
+            />
+            {touched.city && errors.city && (
+              <div className="invalid-feedback d-block">{errors.city}</div>
+            )}
           </div>
 
           {/* Address */}

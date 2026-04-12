@@ -55,10 +55,17 @@
   transition: background 0.3s, color 0.3s;
 }
 
-/* Add subtle card hover effect */
+/* Subtle card hover — skipped for Centerpiece user/admin cards (see below) */
 .card:hover {
   box-shadow: 0 4px 24px rgba(0,0,0,0.3);
   background: var(--color-hover) !important;
+}
+
+/* Centerpiece: no hover lift/background swap (same look as idle state) */
+article.user-card:hover,
+article.admin-card:hover {
+  box-shadow: var(--bs-box-shadow-sm) !important;
+  background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity, 0.75)) !important;
 }
 
 /* Navbar and footer tweaks */

@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { showPopup } from '../../context/popupApi';
 
 function Login({ setRole }) {
   const [email, setEmail] = useState('');
@@ -120,14 +121,27 @@ function Login({ setRole }) {
         navigate('/public-dashboard');
       }
 
-      alert(response.data.message);
+      showPopup({
+        message: response.data.message,
+        variant: 'success',
+        title: 'Logged in',
+      });
 
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        showPopup({
+          message: error.response.data.message,
+          variant: 'error',
+          title: 'Login failed',
+        });
       } else {
         console.error('Login error:', error);
-        alert('Network error. Please check your connection and try again.');
+        showPopup({
+          message:
+            'Network error. Please check your connection and try again.',
+          variant: 'error',
+          title: 'Connection problem',
+        });
       }
     } finally {
       setIsSubmitting(false);

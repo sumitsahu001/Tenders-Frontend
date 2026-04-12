@@ -1,0 +1,76 @@
+/* Global modal overlay — matches index.css theme tokens */
+.global-popup-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+.global-popup-root.is-open {
+  pointer-events: auto;
+}
+
+.global-popup-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.global-popup-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  padding: 1.25rem 1.35rem;
+  text-align: left;
+}
+
+.global-popup-panel:focus {
+  outline: none;
+}
+
+.global-popup-panel.variant-success {
+  border-top: 3px solid #2ea043;
+}
+
+.global-popup-panel.variant-error {
+  border-top: 3px solid #f85149;
+}
+
+.global-popup-panel.variant-info {
+  border-top: 3px solid var(--color-primary);
+}
+
+.global-popup-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.global-popup-message {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin-bottom: 1.15rem;
+  opacity: 0.95;
+  word-break: break-word;
+}
+
+.global-popup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
