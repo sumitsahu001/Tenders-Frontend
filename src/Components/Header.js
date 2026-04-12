@@ -3,9 +3,18 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
+function dashboardPathForRole(r) {
+  if (r === 'contractor') return '/contractor';
+  if (r === 'government') return '/government';
+  if (r === 'public') return '/public-dashboard';
+  return '/';
+}
+
 function Header({ setContentText, role, setRole }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const isHome = location.pathname === '/';
+  const dashboardHref = dashboardPathForRole(role);
 
   const handleLogout = () => {
     localStorage.removeItem('role'); // Clear from storage
@@ -41,13 +50,23 @@ function Header({ setContentText, role, setRole }) {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <Link
-                  className={`nav-link${location.pathname === '/' ? ' active' : ''}`}
-                  aria-current={location.pathname === '/' ? 'page' : undefined}
-                  to="/"
-                >
-                  Home
-                </Link>
+                {role && isHome ? (
+                  <Link
+                    className="nav-link"
+                    to={dashboardHref}
+                    aria-label={`Back to ${role === 'public' ? 'viewer' : role} dashboard`}
+                  >
+                    Back to Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    className={`nav-link${isHome ? ' active' : ''}`}
+                    aria-current={isHome ? 'page' : undefined}
+                    to="/"
+                  >
+                    Home
+                  </Link>
+                )}
               </li>
 
               {role ? (

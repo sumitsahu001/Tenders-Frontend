@@ -2,6 +2,8 @@ import { Route, Routes } from 'react-router-dom';
 import Register from './views/Auth/Register.jsx';
 import Login from './views/Auth/Login.jsx';
 import ContractorDashboard from './views/Contractor/ContractorDashboard.jsx';
+import ContractorBrowseTenders from './views/Contractor/ContractorBrowseTenders.jsx';
+import ContractorMyApplications from './views/Contractor/ContractorMyApplications.jsx';
 import Logout from './views/Auth/Logout.jsx';
 import GovernmentDashboard from './views/Government/GovernmentDashboard.jsx';
 import ProtectedRoute from './Components/Shared/ProtectedRoute.jsx';
@@ -19,6 +21,8 @@ function Main({ role, setRole }) {
 
       <Route element={<ProtectedRoute allowedRoles={['contractor']} />}>
         <Route path="/contractor" element={<ContractorDashboard />} />
+        <Route path="/contractor/tenders" element={<ContractorBrowseTenders />} />
+        <Route path="/contractor/applications" element={<ContractorMyApplications />} />
       </Route>
 
       <Route path="/unauthorized" element={<h1>Unauthorized</h1>} />

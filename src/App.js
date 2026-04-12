@@ -49,10 +49,13 @@ function App() {
     }
   }, [role, navigate]);
 
-  // ✅ Hide footer & carousel on certain pages
+  // Hide footer & carousel on focused dashboard / catalog views
   const hideLayout =
     location.pathname === '/public-dashboard' ||
-    location.pathname === '/government-dashboard';
+    location.pathname === '/government-dashboard' ||
+    location.pathname === '/contractor' ||
+    location.pathname === '/contractor/tenders' ||
+    location.pathname === '/contractor/applications';
 
   return (
     <>

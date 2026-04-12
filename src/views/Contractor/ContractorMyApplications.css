@@ -1,0 +1,109 @@
+/**
+ * My applications — contractor submission tracker (mock data until API ships)
+ * - Sumit Sahu
+ */
+
+.my-app-card {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card);
+  transition: border-color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.my-app-card:hover {
+  border-color: rgba(40, 167, 69, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.my-app-card__accent {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, #28a745, #007bff);
+}
+
+.my-app-card__body {
+  padding: 1.25rem 1.25rem 1.35rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-app-card__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+.my-app-meta {
+  font-size: 0.875rem;
+  color: rgba(241, 243, 244, 0.78);
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.my-app-meta i {
+  margin-top: 0.15rem;
+  color: #28a745;
+  flex-shrink: 0;
+}
+
+.my-app-card__footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.my-app-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+}
+
+.my-app-status--submitted {
+  background: rgba(0, 123, 255, 0.18);
+  color: #7eb8ff;
+  border: 1px solid rgba(0, 123, 255, 0.45);
+}
+
+.my-app-status--under_review {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffd666;
+  border: 1px solid rgba(255, 193, 7, 0.45);
+}
+
+.my-app-status--shortlisted {
+  background: rgba(23, 162, 184, 0.18);
+  color: #7dd3e0;
+  border: 1px solid rgba(23, 162, 184, 0.45);
+}
+
+.my-app-status--rejected {
+  background: rgba(220, 53, 69, 0.18);
+  color: #f5a5ad;
+  border: 1px solid rgba(220, 53, 69, 0.45);
+}
+
+.my-app-status--awarded {
+  background: rgba(40, 167, 69, 0.22);
+  color: #5cd88a;
+  border: 1px solid rgba(40, 167, 69, 0.45);
+}
+
+.my-apps-empty {
+  border: 1px dashed var(--color-border);
+  border-radius: 14px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  background: rgba(0, 123, 255, 0.04);
+}

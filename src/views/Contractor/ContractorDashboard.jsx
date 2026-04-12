@@ -35,7 +35,15 @@ function ContractorDashboard() {
             <p className="card-text">
               Explore and apply for various government tenders. Stay updated with the latest opportunities.
             </p>
-            <button className="btn btn-primary" tabIndex={0} aria-label="View available tenders">View Tenders</button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              tabIndex={0}
+              aria-label="View available tenders"
+              onClick={() => navigate('/contractor/tenders')}
+            >
+              View Tenders
+            </button>
           </div>
         </div>
 
@@ -45,7 +53,15 @@ function ContractorDashboard() {
             <p className="card-text">
               Track the status of your tender applications and manage your submissions.
             </p>
-            <button className="btn btn-success" tabIndex={0} aria-label="View my applications">View Applications</button>
+            <button
+              type="button"
+              className="btn btn-success"
+              tabIndex={0}
+              aria-label="View my applications"
+              onClick={() => navigate('/contractor/applications')}
+            >
+              View Applications
+            </button>
           </div>
         </div>
 

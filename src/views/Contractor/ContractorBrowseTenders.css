@@ -1,0 +1,151 @@
+/**
+ * Browse tenders — contractor catalog view
+ * - Sumit Sahu
+ */
+
+/* Full-height shell so the page ends with cards (no extra chrome below) */
+.contractor-catalog-shell {
+  min-height: calc(100vh - 3.5rem);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1.5rem;
+}
+
+.browse-tenders-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.browse-tenders-cards {
+  flex: 1;
+}
+
+.browse-tenders-kicker {
+  letter-spacing: 0.14em;
+}
+
+.browse-tenders-hero {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 123, 255, 0.12) 0%,
+    rgba(255, 193, 7, 0.08) 50%,
+    rgba(0, 123, 255, 0.06) 100%
+  );
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .browse-tenders-hero {
+    padding: 2rem 2.25rem;
+  }
+}
+
+.browse-tenders-hero h1 {
+  font-size: clamp(1.35rem, 4vw, 1.85rem);
+  line-height: 1.25;
+}
+
+.browse-tenders-hero--cover {
+  margin-bottom: 1.25rem;
+}
+
+.browse-tender-card {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card);
+  transition: border-color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.browse-tender-card:hover {
+  border-color: rgba(0, 123, 255, 0.45);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.browse-tender-card--closed {
+  opacity: 0.92;
+}
+
+.browse-tender-card__accent {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, #007bff, #ffc107);
+}
+
+.browse-tender-card--closed .browse-tender-card__accent {
+  background: linear-gradient(90deg, #6c757d, #495057);
+}
+
+.browse-tender-card__body {
+  padding: 1.25rem 1.25rem 1.35rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.browse-tender-card__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+.browse-tender-meta {
+  font-size: 0.875rem;
+  color: rgba(241, 243, 244, 0.78);
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.browse-tender-meta i {
+  margin-top: 0.15rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.browse-tender-card__actions {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.browse-tender-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+}
+
+.browse-tender-status--open {
+  background: rgba(40, 167, 69, 0.2);
+  color: #5cd88a;
+  border: 1px solid rgba(40, 167, 69, 0.45);
+}
+
+.browse-tender-status--closed {
+  background: rgba(108, 117, 125, 0.25);
+  color: #ced4da;
+  border: 1px solid rgba(108, 117, 125, 0.5);
+}
+
+.btn-apply-tender {
+  width: 100%;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  .btn-apply-tender {
+    width: auto;
+    min-width: 140px;
+  }
+}
