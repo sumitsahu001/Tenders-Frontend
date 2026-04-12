@@ -25,46 +25,104 @@ function Register({ setRole }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const apiurl = process.env.REACT_APP_API_URL + '/api/auth/register';
 
-  const validate = () => {
-    let newErrors = {};
-    if (!formData.name) newErrors.name = 'Full Name is required';
+  // Validate individual field
+  const validateField = (name, value) => {
+    let error = '';
+
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          error = 'Full Name is required';
+        } else if (value.trim().length < 2) {
+          error = 'Name must be at least 2 characters';
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+          error = 'Name can only contain letters and spaces';
+        }
+        break;
+
+      case 'email':
+        if (!value.trim()) {
+          error = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          error = 'Please enter a valid email address';
+        }
+        break;
+
+      case 'password':
+        if (!value) {
+          error = 'Password is required';
+        } else if (value.length < 6) {
+          error = 'Password must be at least 6 characters';
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(value)) {
+          error = 'Password must contain uppercase and lowercase letters';
+        }
+        break;
+
+      case 'mobile':
+        if (!value) {
+          error = 'Mobile number is required';
+        } else if (!/^\d{10}$/.test(value)) {
+          error = 'Mobile number must be exactly 10 digits';
+        }
+        break;
+
+      case 'address':
+        if (!value.trim()) {
+          error = 'Address is required';
+        } else if (value.trim().length < 10) {
+          error = 'Please enter a complete address (min 10 characters)';
+        }
+        break;
+
+      case 'country':
+        if (!value) error = 'Country is required';
+        break;
+
+      case 'state':
+        if (!value) error = 'State is required';
+        break;
+
+      case 'city':
+        if (!value) error = 'City is required';
+        break;
+
+      case 'gender':
+        if (!value) error = 'Please select gender';
+        break;
+
+      case 'role':
+        if (!value) error = 'Please select a role';
+        break;
+
+      default:
+        break;
+    }
+
+    return error;
+  };
+
+  // Validate all fields
+  const validateForm = () => {
+    const newErrors = {};
+    Object.keys(formData).forEach(key => {
+      const error = validateField(key, formData[key]);
+      if (error) newErrors[key] = error;
+    });
     
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email address is invalid';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    if (!formData.mobile) {
-      newErrors.mobile = 'Mobile number is required';
-    } else if (!/^\d{10}$/.test(formData.mobile)) {
-      newErrors.mobile = 'Mobile number must be exactly 10 digits';
-    }
-
-    if (!formData.address) newErrors.address = 'Address is required';
-    if (!formData.country) newErrors.country = 'Country is required';
-    if (!formData.state) newErrors.state = 'State is required';
-    if (!formData.city) newErrors.city = 'City is required';
-    if (!formData.gender) newErrors.gender = 'Please select gender';
-    if (!formData.role) newErrors.role = 'Please select a role';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Update form data
     setFormData(prev => ({ 
       ...prev, 
       [name]: value,
@@ -72,15 +130,41 @@ function Register({ setRole }) {
       ...(name === 'country' ? { state: '', city: '' } : {}),
       ...(name === 'state' ? { city: '' } : {})
     }));
-    // Clear error for this field
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+    
+    // Real-time validation if field was touched
+    if (touched[name]) {
+      const error = validateField(name, value);
+      setErrors(prev => ({ ...prev, [name]: error }));
     }
+  };
+
+  // Handle field blur
+  const handleBlur = (name) => {
+    setTouched(prev => ({ ...prev, [name]: true }));
+    const error = validateField(name, formData[name]);
+    setErrors(prev => ({ ...prev, [name]: error }));
   };
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    if (!validate()) return;
+    
+    // Mark all fields as touched
+    const allTouched = {};
+    Object.keys(formData).forEach(key => {
+      allTouched[key] = true;
+    });
+    setTouched(allTouched);
+    
+    // Validate form
+    if (!validateForm()) {
+      // Scroll to first error
+      const firstErrorField = document.querySelector('.is-invalid');
+      if (firstErrorField) {
+        firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstErrorField.focus();
+      }
+      return;
+    }
     
     setIsSubmitting(true);
 
@@ -130,12 +214,13 @@ function Register({ setRole }) {
             <input 
               name="name" 
               type="text" 
-              className={`form-control ${errors.name ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.name && errors.name ? 'is-invalid' : ''} ${touched.name && !errors.name && formData.name ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('name')}
               value={formData.name} 
               placeholder="Enter full name"
             />
-            {errors.name && <div className="invalid-feedback">{errors.name}</div>}
+            {touched.name && errors.name && <div className="invalid-feedback">{errors.name}</div>}
           </div>
 
           {/* Email */}
@@ -144,12 +229,13 @@ function Register({ setRole }) {
             <input 
               name="email" 
               type="email" 
-              className={`form-control ${errors.email ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.email && errors.email ? 'is-invalid' : ''} ${touched.email && !errors.email && formData.email ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('email')}
               value={formData.email} 
               placeholder="example@mail.com"
             />
-            {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+            {touched.email && errors.email && <div className="invalid-feedback">{errors.email}</div>}
           </div>
 
           {/* Password */}
@@ -158,12 +244,13 @@ function Register({ setRole }) {
             <input 
               name="password" 
               type="password" 
-              className={`form-control ${errors.password ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && formData.password ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('password')}
               value={formData.password} 
-              placeholder="Min 6 characters"
+              placeholder="Min 6 characters (uppercase & lowercase)"
             />
-            {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+            {touched.password && errors.password && <div className="invalid-feedback">{errors.password}</div>}
           </div>
 
           {/* Mobile */}
@@ -172,13 +259,14 @@ function Register({ setRole }) {
             <input 
               name="mobile" 
               type="text" 
-              className={`form-control ${errors.mobile ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.mobile && errors.mobile ? 'is-invalid' : ''} ${touched.mobile && !errors.mobile && formData.mobile ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('mobile')}
               value={formData.mobile} 
               placeholder="10 digit number"
               maxLength="10"
             />
-            {errors.mobile && <div className="invalid-feedback">{errors.mobile}</div>}
+            {touched.mobile && errors.mobile && <div className="invalid-feedback">{errors.mobile}</div>}
           </div>
 
           
@@ -188,14 +276,15 @@ function Register({ setRole }) {
             <label className="form-label">Country</label>
             <select 
               name="country" 
-              className={`form-control ${errors.country ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.country && errors.country ? 'is-invalid' : ''} ${touched.country && !errors.country && formData.country ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('country')}
               value={formData.country}
             >
               <option value="">Select Country</option>
               {countries.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            {errors.country && <div className="invalid-feedback">{errors.country}</div>}
+            {touched.country && errors.country && <div className="invalid-feedback">{errors.country}</div>}
           </div>
 
           {/* State */}
@@ -203,15 +292,16 @@ function Register({ setRole }) {
             <label className="form-label">State</label>
             <select 
               name="state" 
-              className={`form-control ${errors.state ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.state && errors.state ? 'is-invalid' : ''} ${touched.state && !errors.state && formData.state ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('state')}
               value={formData.state}
               disabled={!formData.country}
             >
               <option value="">Select State</option>
               {states.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
-            {errors.state && <div className="invalid-feedback">{errors.state}</div>}
+            {touched.state && errors.state && <div className="invalid-feedback">{errors.state}</div>}
           </div>
 
           {/* City */}
@@ -219,15 +309,16 @@ function Register({ setRole }) {
             <label className="form-label">City</label>
             <select 
               name="city" 
-              className={`form-control ${errors.city ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.city && errors.city ? 'is-invalid' : ''} ${touched.city && !errors.city && formData.city ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('city')}
               value={formData.city}
               disabled={!formData.state}
             >
               <option value="">Select City</option>
               {cities.map(ct => <option key={ct} value={ct}>{ct}</option>)}
             </select>
-            {errors.city && <div className="invalid-feedback">{errors.city}</div>}
+            {touched.city && errors.city && <div className="invalid-feedback">{errors.city}</div>}
           </div>
 
           {/* Address */}
@@ -236,38 +327,40 @@ function Register({ setRole }) {
             <textarea 
               name="address" 
               rows="2" 
-              className={`form-control ${errors.address ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.address && errors.address ? 'is-invalid' : ''} ${touched.address && !errors.address && formData.address ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('address')}
               value={formData.address}
               placeholder="Street, locality, etc."
             ></textarea>
-            {errors.address && <div className="invalid-feedback">{errors.address}</div>}
+            {touched.address && errors.address && <div className="invalid-feedback">{errors.address}</div>}
           </div>
 
           {/* Gender */}
           <div className="col-md-6">
-            <label className="form-label">Gender</label>
+            <label className="form-label">Gender *</label>
             <div className="d-flex gap-3 pt-2">
               <label><input type="radio" name="gender" value="male" checked={formData.gender === 'male'} onChange={handleChange} /> Male</label>
               <label><input type="radio" name="gender" value="female" checked={formData.gender === 'female'} onChange={handleChange} /> Female</label>
             </div>
-            {errors.gender && <div className="text-danger small mt-1">{errors.gender}</div>}
+            {touched.gender && errors.gender && <div className="text-danger small mt-1">{errors.gender}</div>}
           </div>
 
           {/* Role */}
           <div className="col-md-6">
-            <label className="form-label">Role</label>
+            <label className="form-label">Role *</label>
             <select 
               name="role" 
-              className={`form-control ${errors.role ? 'is-invalid' : ''}`} 
-              onChange={handleChange} 
+              className={`form-control ${touched.role && errors.role ? 'is-invalid' : ''} ${touched.role && !errors.role && formData.role ? 'is-valid' : ''}`}
+              onChange={handleChange}
+              onBlur={() => handleBlur('role')}
               value={formData.role}
             >
               <option value="">Select Role</option>
               <option value="contractor">Contractor (Bidder)</option>
               <option value="government">Government Official</option>
             </select>
-            {errors.role && <div className="invalid-feedback">{errors.role}</div>}
+            {touched.role && errors.role && <div className="invalid-feedback">{errors.role}</div>}
           </div>
 
           {/* Submit */}
