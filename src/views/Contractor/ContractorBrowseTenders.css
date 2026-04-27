@@ -98,17 +98,20 @@
 }
 
 .browse-tender-meta {
-  font-size: 0.875rem;
-  color: rgba(241, 243, 244, 0.78);
-  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  color: #4a5568; /* Solid, readable gray for better contrast */
+  margin-bottom: 0.5rem;
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.65rem;
+  font-weight: 500;
 }
 
 .browse-tender-meta i {
-  margin-top: 0.15rem;
   color: var(--color-primary);
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
   flex-shrink: 0;
 }
 

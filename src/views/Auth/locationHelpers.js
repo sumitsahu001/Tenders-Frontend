@@ -1,8 +1,4 @@
-/**
- * Thin helpers around country-state-city so Register stays readable.
- * Data comes from the library (ISO codes internally; we store display names in form state).
- * - Sumit Sahu
- */
+
 import { Country, State, City } from 'country-state-city';
 
 export function getCountryOptions() {

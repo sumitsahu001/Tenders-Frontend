@@ -81,6 +81,12 @@ function GlobalPopup({ open, title, message, variant, onClose }) {
                 : { type: 'spring', stiffness: 420, damping: 32 }
             }
           >
+            <div className="global-popup-icon">
+              {variant === 'success' && <i className="bi bi-check-circle-fill"></i>}
+              {variant === 'error' && <i className="bi bi-exclamation-triangle-fill"></i>}
+              {variant === 'info' && <i className="bi bi-info-circle-fill"></i>}
+            </div>
+
             {title ? (
               <div id={titleId} className="global-popup-title">
                 {title}
@@ -92,10 +98,10 @@ function GlobalPopup({ open, title, message, variant, onClose }) {
             <div className="global-popup-actions">
               <button
                 type="button"
-                className="btn btn-primary btn-sm px-3"
+                className={`btn btn-${variant === 'info' ? 'primary' : variant} btn-sm px-3`}
                 onClick={onClose}
               >
-                OK
+                Great, thanks!
               </button>
             </div>
           </motion.div>

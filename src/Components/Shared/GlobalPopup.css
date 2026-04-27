@@ -21,56 +21,63 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.85); /* Darker backdrop for focus */
+  backdrop-filter: blur(5px);      /* Stronger blur */
 }
 
 .global-popup-panel {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 420px;
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
-  color: var(--color-text);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
-  padding: 1.25rem 1.35rem;
-  text-align: left;
+  max-width: 400px;
+  border-radius: 16px;
+  background: #ffffff; /* Solid white for maximum brightness/contrast */
+  color: #1a1d21;      /* Dark text for readability */
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  text-align: center;  /* Centered for a premium feel */
+  border: none;
 }
 
 .global-popup-panel:focus {
   outline: none;
 }
 
-.global-popup-panel.variant-success {
-  border-top: 3px solid #2ea043;
+/* Icon styling */
+.global-popup-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  display: block;
 }
 
-.global-popup-panel.variant-error {
-  border-top: 3px solid #f85149;
-}
-
-.global-popup-panel.variant-info {
-  border-top: 3px solid var(--color-primary);
-}
+.variant-success .global-popup-icon { color: #28a745; }
+.variant-error .global-popup-icon { color: #dc3545; }
+.variant-info .global-popup-icon { color: #007bff; }
 
 .global-popup-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #111;
 }
 
 .global-popup-message {
-  font-size: 0.95rem;
-  line-height: 1.45;
-  margin-bottom: 1.15rem;
-  opacity: 0.95;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  color: #4a5568;
   word-break: break-word;
 }
 
 .global-popup-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.5rem;
+}
+
+.global-popup-actions .btn {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  font-weight: 600;
+  border-radius: 50px; /* Rounded pill button */
 }

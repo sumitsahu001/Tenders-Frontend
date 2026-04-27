@@ -16,6 +16,7 @@ function Login({ setRole }) {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const apiurl = process.env.REACT_APP_API_URL + '/api/auth/login';
@@ -174,20 +175,30 @@ function Login({ setRole }) {
         </div>
         <div className="form-group">
           <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && password ? 'is-valid' : ''}`}
-            id="password"
-            placeholder="Password (min 6 characters)"
-            value={password}
-            onChange={(e) => handleFieldChange('password', e.target.value)}
-            onBlur={() => handleBlur('password')}
-          />
-          {touched.password && errors.password && (
-            <div className="invalid-feedback d-block">
-              {errors.password}
-            </div>
-          )}
+          <div className="input-group">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && password ? 'is-valid' : ''}`}
+              id="password"
+              placeholder="Password (min 6 characters)"
+              value={password}
+              onChange={(e) => handleFieldChange('password', e.target.value)}
+              onBlur={() => handleBlur('password')}
+            />
+            <button 
+              className="btn btn-outline-secondary" 
+              type="button" 
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ borderTopRightRadius: '0.375rem', borderBottomRightRadius: '0.375rem' }}
+            >
+              <i className={`bi bi-eye${showPassword ? '-slash' : ''}`}></i>
+            </button>
+            {touched.password && errors.password && (
+              <div className="invalid-feedback d-block">
+                {errors.password}
+              </div>
+            )}
+          </div>
         </div>
         <br />
         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>

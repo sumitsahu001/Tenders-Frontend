@@ -36,6 +36,7 @@ function Register({ setRole }) {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const apiurl = process.env.REACT_APP_API_URL + '/api/auth/register';
@@ -68,8 +69,6 @@ function Register({ setRole }) {
           error = 'Password is required';
         } else if (value.length < 6) {
           error = 'Password must be at least 6 characters';
-        } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(value)) {
-          error = 'Password must contain uppercase and lowercase letters';
         }
         break;
 
@@ -216,22 +215,22 @@ function Register({ setRole }) {
       state: name,
       city: '',
     }));
-    setErrors((prev) => {
-      const next = { ...prev, city: '' };
-      if (touched.state) {
-        next.state = validateField('state', name);
-      }
-      return next;
-    });
+    setTouched((prev) => ({ ...prev, state: true }));
+    setErrors((prev) => ({
+      ...prev,
+      state: validateField('state', name),
+      city: '',
+    }));
   };
 
   const handleCitySelect = (opt) => {
     const name = opt?.label ?? '';
     setFormData((prev) => ({ ...prev, city: name }));
-    setErrors((prev) => {
-      if (!touched.city) return prev;
-      return { ...prev, city: validateField('city', name) };
-    });
+    setTouched((prev) => ({ ...prev, city: true }));
+    setErrors((prev) => ({
+      ...prev,
+      city: validateField('city', name),
+    }));
   };
 
   const countrySelectStyles = useMemo(
@@ -363,16 +362,26 @@ function Register({ setRole }) {
           {/* Password */}
           <div className="col-md-6">
             <label className="form-label">Password</label>
-            <input 
-              name="password" 
-              type="password" 
-              className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && formData.password ? 'is-valid' : ''}`}
-              onChange={handleChange}
-              onBlur={() => handleBlur('password')}
-              value={formData.password} 
-              placeholder="Min 6 characters (uppercase & lowercase)"
-            />
-            {touched.password && errors.password && <div className="invalid-feedback">{errors.password}</div>}
+            <div className="input-group">
+              <input 
+                name="password" 
+                type={showPassword ? 'text' : 'password'} 
+                className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && formData.password ? 'is-valid' : ''}`}
+                onChange={handleChange}
+                onBlur={() => handleBlur('password')}
+                value={formData.password} 
+                placeholder="Min 6 characters"
+              />
+              <button 
+                className="btn btn-outline-secondary" 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ borderTopRightRadius: '0.375rem', borderBottomRightRadius: '0.375rem' }}
+              >
+                <i className={`bi bi-eye${showPassword ? '-slash' : ''}`}></i>
+              </button>
+              {touched.password && errors.password && <div className="invalid-feedback">{errors.password}</div>}
+            </div>
           </div>
 
           {/* Mobile */}
