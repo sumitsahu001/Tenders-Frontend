@@ -11,6 +11,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Modal, Button, Form } from 'react-bootstrap';
 import { showPopup } from '../../context/popupApi';
 import './ContractorBrowseTenders.css';
 
@@ -42,6 +43,13 @@ function ContractorBrowseTenders() {
     fetchTenders();
   }, []);
 
+  // Application Modal State
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [selectedTender, setSelectedTender] = useState(null);
+  const [bidAmount, setBidAmount] = useState('');
+  const [proposal, setProposal] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const listVariants = useMemo(
     () => ({
       hidden: { opacity: 0 },
@@ -72,11 +80,65 @@ function ContractorBrowseTenders() {
   );
 
   const handleApply = (tender) => {
-    showPopup({
-      title: 'Interest recorded',
-      message: `You chose to apply for "${tender.title}". Full submission will open once the application module is connected to the backend.`,
-      variant: 'success',
-    });
+    setSelectedTender(tender);
+    setShowApplyModal(true);
+  };
+
+  const closeApplyModal = () => {
+    setShowApplyModal(false);
+    setSelectedTender(null);
+    setBidAmount('');
+    setProposal('');
+  };
+
+  const handleApplySubmit = async (e) => {
+    e.preventDefault();
+    if (!bidAmount || !proposal) {
+      showPopup({
+        title: 'Validation Error',
+        message: 'Please fill in all fields before submitting.',
+        variant: 'error',
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const token = localStorage.getItem('token');
+      const apiurl = process.env.REACT_APP_API_URL + '/api/applications';
+      
+      const res = await axios.post(
+        apiurl,
+        {
+          tenderId: selectedTender._id,
+          bidAmount: Number(bidAmount),
+          proposal,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        showPopup({
+          title: 'Application Submitted',
+          message: `Your bid for "${selectedTender.title}" has been recorded successfully.`,
+          variant: 'success',
+        });
+        closeApplyModal();
+      }
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      showPopup({
+        title: 'Submission Failed',
+        message: error.response?.data?.message || 'Failed to submit application. Please try again.',
+        variant: 'error',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -201,6 +263,83 @@ function ContractorBrowseTenders() {
             })
           )}
         </motion.div>
+
+        {/* Apply Tender Modal */}
+        <Modal 
+          show={showApplyModal} 
+          onHide={closeApplyModal} 
+          centered 
+          contentClassName="apply-modal-content"
+          backdrop="static"
+        >
+          <Modal.Header closeButton className="border-0 pb-0">
+            <Modal.Title className="text-primary fw-bold">Submit Tender Bid</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="pt-2">
+            {selectedTender && (
+              <div className="mb-4 p-3 bg-light rounded-3 border">
+                <h6 className="text-muted text-uppercase small mb-1">Applying for:</h6>
+                <h5 className="mb-0">{selectedTender.title}</h5>
+                <div className="mt-2 text-muted small">
+                  <i className="bi bi-building me-1"></i> {selectedTender.department} | 
+                  <i className="bi bi-currency-rupee ms-2 me-1"></i> Budget: {selectedTender.budget}
+                </div>
+              </div>
+            )}
+            
+            <Form onSubmit={handleApplySubmit}>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-semibold">Bid Amount (₹)</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter your total bid amount"
+                  value={bidAmount}
+                  onChange={(e) => setBidAmount(e.target.value)}
+                  className="py-2"
+                  required
+                />
+                <Form.Text className="text-muted">
+                  Provide your competitive financial quote for this project.
+                </Form.Text>
+              </Form.Group>
+
+              <Form.Group className="mb-4">
+                <Form.Label className="fw-semibold">Technical Proposal Summary</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  placeholder="Summarize your execution plan, timeline, and qualifications..."
+                  value={proposal}
+                  onChange={(e) => setProposal(e.target.value)}
+                  className="py-2"
+                  required
+                />
+              </Form.Group>
+
+              <div className="d-grid gap-2">
+                <Button 
+                  variant="primary" 
+                  type="submit" 
+                  size="lg" 
+                  disabled={isSubmitting}
+                  className="fw-bold py-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Submitting Bid...
+                    </>
+                  ) : (
+                    'Submit Application'
+                  )}
+                </Button>
+                <Button variant="link" onClick={closeApplyModal} className="text-muted text-decoration-none" disabled={isSubmitting}>
+                  Cancel
+                </Button>
+              </div>
+            </Form>
+          </Modal.Body>
+        </Modal>
         </div>
       </div>
     </>

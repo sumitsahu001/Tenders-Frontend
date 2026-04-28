@@ -3,10 +3,11 @@
  * @description Lists this contractor's tender applications and workflow status (mock rows until backend exists).
  * - Sumit Sahu
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion, useReducedMotion } from 'framer-motion';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './ContractorBrowseTenders.css';
@@ -20,52 +21,35 @@ const STATUS_META = {
   awarded: { label: 'Awarded', className: 'my-app-status--awarded' },
 };
 
-/** Replace with GET /api/applications/me (or similar) when wired */
-const MOCK_APPLICATIONS = [
-  {
-    id: 'app-2026-1042',
-    tenderId: 't-2026-001',
-    tenderTitle: 'Smart City Road Development — Phase II',
-    department: 'Urban Development Department',
-    submittedOn: '12 March 2026',
-    status: 'under_review',
-  },
-  {
-    id: 'app-2026-1038',
-    tenderId: 't-2026-003',
-    tenderTitle: 'Rural Water Supply — 500 Villages Package',
-    department: 'Public Health Engineering Department',
-    submittedOn: '08 March 2026',
-    status: 'shortlisted',
-  },
-  {
-    id: 'app-2026-1011',
-    tenderId: 't-2026-004',
-    tenderTitle: 'Government Cloud DR Site — Managed Services',
-    department: 'National Informatics Centre',
-    submittedOn: '22 February 2026',
-    status: 'submitted',
-  },
-  {
-    id: 'app-2025-0891',
-    tenderId: 't-2025-014',
-    tenderTitle: 'District Hospital Equipment & Maintenance',
-    department: 'State Health Mission',
-    submittedOn: '15 January 2026',
-    status: 'rejected',
-  },
-  {
-    id: 'app-2025-0712',
-    tenderId: 't-2025-009',
-    tenderTitle: 'National Highway Corridor — Feasibility Study',
-    department: 'Ministry of Road Transport',
-    submittedOn: '02 December 2025',
-    status: 'awarded',
-  },
-];
-
 function ContractorMyApplications() {
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const apiurl = process.env.REACT_APP_API_URL + '/api/applications/my';
+        const res = await axios.get(apiurl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.data.success) {
+          setApplications(res.data.data);
+        }
+      } catch (err) {
+        console.error('Error fetching applications:', err);
+        setError('Failed to load your applications. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApplications();
+  }, []);
 
   const listVariants = useMemo(
     () => ({
@@ -132,7 +116,21 @@ function ContractorMyApplications() {
             </div>
           </motion.div>
 
-          {MOCK_APPLICATIONS.length === 0 ? (
+          {loading ? (
+            <div className="col-12 text-center py-5">
+              <div className="spinner-border text-success" role="status">
+                <span className="visually-hidden">Loading applications...</span>
+              </div>
+              <p className="mt-3 text-muted">Fetching your application history...</p>
+            </div>
+          ) : error ? (
+            <div className="col-12 text-center py-5">
+              <div className="alert alert-danger d-inline-block px-4 py-3 shadow-sm border-0">
+                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                {error}
+              </div>
+            </div>
+          ) : applications.length === 0 ? (
             <motion.div
               className="my-apps-empty"
               initial={prefersReducedMotion ? false : { opacity: 0 }}
@@ -156,46 +154,49 @@ function ContractorMyApplications() {
               role="list"
               aria-label="Your tender applications"
             >
-              {MOCK_APPLICATIONS.map((app) => {
+              {applications.map((app) => {
                 const status = STATUS_META[app.status] || STATUS_META.submitted;
                 return (
                   <motion.div
-                    key={app.id}
+                    key={app._id}
                     className="col-12 col-md-6 col-xl-4"
                     variants={cardVariants}
                     role="listitem"
                   >
-                    <article className="my-app-card" aria-labelledby={`app-title-${app.id}`}>
+                    <article className="my-app-card" aria-labelledby={`app-title-${app._id}`}>
                       <div className="my-app-card__accent" aria-hidden="true" />
                       <div className="my-app-card__body">
                         <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
-                          <span className="text-muted small font-monospace">{app.id}</span>
+                          <span className="text-muted small font-monospace">#{app._id.slice(-6).toUpperCase()}</span>
                           <span className={`my-app-status ${status.className}`}>{status.label}</span>
                         </div>
-                        <h2 id={`app-title-${app.id}`} className="my-app-card__title">
-                          {app.tenderTitle}
+                        <h2 id={`app-title-${app._id}`} className="my-app-card__title">
+                          {app.tender?.title || 'Unknown Tender'}
                         </h2>
                         <div className="my-app-meta">
                           <i className="bi bi-hash" aria-hidden="true" />
-                          <span>Tender ref: {app.tenderId}</span>
+                          <span>Ref: {app._id}</span>
                         </div>
                         <div className="my-app-meta">
                           <i className="bi bi-building" aria-hidden="true" />
-                          <span>{app.department}</span>
+                          <span>{app.tender?.department || 'N/A'}</span>
                         </div>
                         <div className="my-app-meta">
                           <i className="bi bi-calendar-check" aria-hidden="true" />
-                          <span>Submitted: {app.submittedOn}</span>
+                          <span>Submitted: {new Date(app.submittedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                         </div>
                         <div className="my-app-card__footer">
-                          <Link
-                            to="/contractor/tenders"
-                            className="btn btn-outline-primary btn-sm"
-                            aria-label={`Open tender catalog to find ${app.tenderTitle}`}
-                          >
-                            <i className="bi bi-grid-3x3-gap me-1" aria-hidden="true" />
-                            View tender catalog
-                          </Link>
+                          <div className="d-flex justify-content-between align-items-center">
+                            <span className="text-primary fw-bold">₹{app.bidAmount.toLocaleString('en-IN')}</span>
+                            <Link
+                              to="/contractor/tenders"
+                              className="btn btn-outline-primary btn-sm"
+                              aria-label={`Open tender catalog to find ${app.tender?.title}`}
+                            >
+                              <i className="bi bi-grid-3x3-gap me-1" aria-hidden="true" />
+                              Browse Catalog
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </article>

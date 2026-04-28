@@ -10,7 +10,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--color-card);
+  background: #ffffff; /* Explicitly white for better contrast */
   transition: border-color 0.2s ease, box-shadow 0.25s ease;
 }
 
@@ -33,25 +33,28 @@
 }
 
 .my-app-card__title {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
   line-height: 1.35;
-  margin-bottom: 0.75rem;
-  color: var(--color-text);
+  margin-bottom: 1rem;
+  color: var(--color-primary); /* Changed to primary for better visibility */
 }
 
 .my-app-meta {
-  font-size: 0.875rem;
-  color: rgba(241, 243, 244, 0.78);
-  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  color: #555e6d; /* Darker, more readable gray for light backgrounds */
+  margin-bottom: 0.6rem;
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
 }
 
 .my-app-meta i {
-  margin-top: 0.15rem;
   color: #28a745;
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
   flex-shrink: 0;
 }
 
