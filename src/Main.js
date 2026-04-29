@@ -7,6 +7,9 @@ import ContractorMyApplications from './views/Contractor/ContractorMyApplication
 import Logout from './views/Auth/Logout.jsx';
 import GovernmentDashboard from './views/Government/GovernmentDashboard.jsx';
 import GovernmentCreateTender from './views/Government/GovernmentCreateTender.jsx';
+import GovernmentManageTenders from './views/Government/GovernmentManageTenders.jsx';
+import GovernmentContractors from './views/Government/GovernmentContractors.jsx';
+import GovernmentAnalytics from './views/Government/GovernmentAnalytics.jsx';
 import ProtectedRoute from './Components/Shared/ProtectedRoute.jsx';
 
 function Main({ role, setRole }) {
@@ -19,6 +22,9 @@ function Main({ role, setRole }) {
       <Route element={<ProtectedRoute allowedRoles={['government']} />}>
         <Route path="/government" element={<GovernmentDashboard />} />
         <Route path="/government/create-tender" element={<GovernmentCreateTender />} />
+        <Route path="/government/tenders" element={<GovernmentManageTenders />} />
+        <Route path="/government/contractors" element={<GovernmentContractors />} />
+        <Route path="/government/analytics" element={<GovernmentAnalytics />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={['contractor']} />}>

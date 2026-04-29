@@ -4,7 +4,7 @@ Welcome to the **Government Tenders Portal**, a high-performance, transparent, a
 
 > **Created by**: [Sumit Sahu](https://github.com/sumitsahu001)  
 > **Tech Stack**: MERN (MongoDB, Express, React, Node.js)  
-> **Status**: Production-Ready Base (Active Development)
+> **Status**: Production-Ready Base 
 
 ---
 
