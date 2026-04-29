@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { usePopup } from '../../context/PopupContext';
 
+const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api';
+
 function GovernmentManageTenders() {
   const [tenders, setTenders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,8 +12,6 @@ function GovernmentManageTenders() {
   const [applications, setApplications] = useState([]);
   const [fetchingApps, setFetchingApps] = useState(false);
   const { showPopup } = usePopup();
-
-  const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api';
 
   // 1. Fetch Tenders created by this admin
   const fetchTenders = useCallback(async () => {

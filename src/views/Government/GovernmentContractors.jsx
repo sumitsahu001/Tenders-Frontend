@@ -3,13 +3,13 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { usePopup } from '../../context/PopupContext';
 
+const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api';
+
 function GovernmentContractors() {
   const [contractors, setContractors] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const { showPopup } = usePopup();
-
-  const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api';
 
   useEffect(() => {
     const fetchContractors = async () => {
