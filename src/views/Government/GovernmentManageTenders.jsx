@@ -11,7 +11,7 @@ function GovernmentManageTenders() {
   const [fetchingApps, setFetchingApps] = useState(false);
   const { showPopup } = usePopup();
 
-  const API_BASE_URL = 'http://localhost:5000/api';
+  const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api';
 
   // 1. Fetch Tenders created by this admin
   const fetchTenders = useCallback(async () => {

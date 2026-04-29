@@ -8,7 +8,7 @@ function GovernmentAnalytics() {
   const [loading, setLoading] = useState(true);
   const { showPopup } = usePopup();
 
-  const API_BASE_URL = 'http://localhost:5000/api';
+  const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api';
 
   useEffect(() => {
     const fetchStats = async () => {
