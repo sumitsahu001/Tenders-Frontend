@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { usePopup } from '../../context/PopupContext';
@@ -14,7 +14,7 @@ function GovernmentManageTenders() {
   const API_BASE_URL = 'http://localhost:5000/api';
 
   // 1. Fetch Tenders created by this admin
-  const fetchTenders = async () => {
+  const fetchTenders = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get(`${API_BASE_URL}/tenders/my-tenders`, {
@@ -26,11 +26,11 @@ function GovernmentManageTenders() {
       showPopup('Error fetching tenders', 'error');
       setLoading(false);
     }
-  };
+  }, [showPopup]);
 
   useEffect(() => {
     fetchTenders();
-  }, []);
+  }, [fetchTenders]);
 
   // 2. Fetch Applications for a specific tender
   const handleViewApplications = async (tender) => {
