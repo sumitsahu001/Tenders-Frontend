@@ -6,9 +6,10 @@
  */
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { showPopup } from '../../context/popupApi';
+import './Auth.css';
 
 function Login({ setRole }) {
   const [email, setEmail] = useState('');
@@ -155,56 +156,98 @@ function Login({ setRole }) {
         <title>Login - GovTenders Portal</title>
         <meta name="description" content="Login to your GovTenders account to apply for and track government tenders." />
       </Helmet>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email address:</label>
-          <input
-            type="email"
-            className={`form-control ${touched.email && errors.email ? 'is-invalid' : ''} ${touched.email && !errors.email && email ? 'is-valid' : ''}`}
-            id="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => handleFieldChange('email', e.target.value)}
-            onBlur={() => handleBlur('email')}
-          />
-          {touched.email && errors.email && (
-            <div className="invalid-feedback d-block">
-              {errors.email}
+
+      <div className="auth-container">
+        <div className="auth-form-side">
+          <div className="auth-form-wrapper">
+            <div className="auth-header">
+              <h1 className="auth-title">Welcome Back</h1>
+              <p className="auth-subtitle">Sign in to your account to continue</p>
             </div>
-          )}
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <div className="input-group">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && password ? 'is-valid' : ''}`}
-              id="password"
-              placeholder="Password (min 6 characters)"
-              value={password}
-              onChange={(e) => handleFieldChange('password', e.target.value)}
-              onBlur={() => handleBlur('password')}
-            />
-            <button 
-              className="btn btn-outline-secondary" 
-              type="button" 
-              onClick={() => setShowPassword(!showPassword)}
-              style={{ borderTopRightRadius: '0.375rem', borderBottomRightRadius: '0.375rem' }}
-            >
-              <i className={`bi bi-eye${showPassword ? '-slash' : ''}`}></i>
-            </button>
-            {touched.password && errors.password && (
-              <div className="invalid-feedback d-block">
-                {errors.password}
+
+            <div className="auth-card">
+              <form onSubmit={handleSubmit}>
+                <div className="auth-form-group">
+                  <label className="auth-label" htmlFor="email">Email Address</label>
+                  <div className="auth-input-wrapper">
+                    <i className="bi bi-envelope auth-input-icon"></i>
+                    <input
+                      type="email"
+                      className={`auth-input ${touched.email && errors.email ? 'is-invalid' : ''} ${touched.email && !errors.email && email ? 'is-valid' : ''}`}
+                      id="email"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => handleFieldChange('email', e.target.value)}
+                      onBlur={() => handleBlur('email')}
+                      required
+                    />
+                  </div>
+                  {touched.email && errors.email && (
+                    <div className="invalid-feedback d-block mt-1">
+                      {errors.email}
+                    </div>
+                  )}
+                </div>
+
+                <div className="auth-form-group">
+                  <label className="auth-label" htmlFor="password">Password</label>
+                  <div className="auth-input-wrapper">
+                    <i className="bi bi-lock auth-input-icon"></i>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      className={`auth-input ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && password ? 'is-valid' : ''}`}
+                      id="password"
+                      placeholder="Enter password"
+                      value={password}
+                      onChange={(e) => handleFieldChange('password', e.target.value)}
+                      onBlur={() => handleBlur('password')}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="auth-password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i className={`bi bi-eye${showPassword ? '-slash' : ''}`}></i>
+                    </button>
+                  </div>
+                  {touched.password && errors.password && (
+                    <div className="invalid-feedback d-block mt-1">
+                      {errors.password}
+                    </div>
+                  )}
+                </div>
+
+                <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+                  {isSubmitting ? 'Logging in...' : 'Sign In'}
+                </button>
+              </form>
+
+              <div className="auth-footer-text">
+                Don't have an account? 
+                <Link to="/register" className="auth-footer-link">Register</Link>
               </div>
-            )}
+            </div>
           </div>
         </div>
-        <br />
-        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-          {isSubmitting ? 'Logging in...' : 'Submit'}
-        </button>
-      </form>
+
+        <div className="auth-hero-side">
+          <div className="auth-grid-overlay"></div>
+          <div className="auth-blob auth-blob-1"></div>
+          <div className="auth-blob auth-blob-2"></div>
+          <div className="auth-blob auth-blob-3"></div>
+
+          <div className="auth-hero-content">
+            <div className="auth-badge-icon">
+              <i className="bi bi-shield-lock"></i>
+            </div>
+            <h2 className="auth-hero-title">Secure Portal Access</h2>
+            <p className="auth-hero-desc">
+              Access the official GovTenders bidding and contracts hub. Our portal utilizes end-to-end data encryption and strict cryptographic standards to ensure a transparent, fair, and secure bidding environment.
+            </p>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

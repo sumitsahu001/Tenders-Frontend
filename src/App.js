@@ -52,6 +52,8 @@ function App() {
   // Hide footer & carousel on focused dashboard / catalog views
   const hideLayout =
     location.pathname === '/public-dashboard' ||
+    location.pathname === '/login' ||
+    location.pathname === '/register' ||
     location.pathname.startsWith('/government') ||
     location.pathname.startsWith('/contractor');
 

@@ -6,7 +6,7 @@
  */
 import React, { useMemo, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Select from 'react-select';
 import { showPopup } from '../../context/popupApi';
@@ -18,6 +18,7 @@ import {
   getIsoCodeForStateName,
   getStateOptions,
 } from './locationHelpers';
+import './Auth.css';
 
 function Register({ setRole }) {
   const [formData, setFormData] = useState({
@@ -326,217 +327,256 @@ function Register({ setRole }) {
         <meta name="description" content="Register for a GovTenders account." />
       </Helmet>
 
-      <form className="container mt-4 mb-5 p-4 shadow-sm bg-white rounded" onSubmit={handleSubmit}>
-        <h2 className="text-center mb-4">Create Account</h2>
-        <div className="row g-3">
-          {/* Name */}
-          <div className="col-md-6">
-            <label className="form-label">Full Name</label>
-            <input 
-              name="name" 
-              type="text" 
-              className={`form-control ${touched.name && errors.name ? 'is-invalid' : ''} ${touched.name && !errors.name && formData.name ? 'is-valid' : ''}`}
-              onChange={handleChange}
-              onBlur={() => handleBlur('name')}
-              value={formData.name} 
-              placeholder="Enter full name"
-            />
-            {touched.name && errors.name && <div className="invalid-feedback">{errors.name}</div>}
-          </div>
-
-          {/* Email */}
-          <div className="col-md-6">
-            <label className="form-label">Email</label>
-            <input 
-              name="email" 
-              type="email" 
-              className={`form-control ${touched.email && errors.email ? 'is-invalid' : ''} ${touched.email && !errors.email && formData.email ? 'is-valid' : ''}`}
-              onChange={handleChange}
-              onBlur={() => handleBlur('email')}
-              value={formData.email} 
-              placeholder="example@mail.com"
-            />
-            {touched.email && errors.email && <div className="invalid-feedback">{errors.email}</div>}
-          </div>
-
-          {/* Password */}
-          <div className="col-md-6">
-            <label className="form-label">Password</label>
-            <div className="input-group">
-              <input 
-                name="password" 
-                type={showPassword ? 'text' : 'password'} 
-                className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && formData.password ? 'is-valid' : ''}`}
-                onChange={handleChange}
-                onBlur={() => handleBlur('password')}
-                value={formData.password} 
-                placeholder="Min 6 characters"
-              />
-              <button 
-                className="btn btn-outline-secondary" 
-                type="button" 
-                onClick={() => setShowPassword(!showPassword)}
-                style={{ borderTopRightRadius: '0.375rem', borderBottomRightRadius: '0.375rem' }}
-              >
-                <i className={`bi bi-eye${showPassword ? '-slash' : ''}`}></i>
-              </button>
-              {touched.password && errors.password && <div className="invalid-feedback">{errors.password}</div>}
+      <div className="auth-container">
+        <div className="auth-form-side">
+          <div className="auth-form-wrapper register-form-width">
+            <div className="auth-header">
+              <h1 className="auth-title">Create Account</h1>
+              <p className="auth-subtitle">Register to begin bidding or managing public contracts</p>
             </div>
-          </div>
 
-          {/* Mobile */}
-          <div className="col-md-6">
-            <label className="form-label">Mobile</label>
-            <input 
-              name="mobile" 
-              type="text" 
-              className={`form-control ${touched.mobile && errors.mobile ? 'is-invalid' : ''} ${touched.mobile && !errors.mobile && formData.mobile ? 'is-valid' : ''}`}
-              onChange={handleChange}
-              onBlur={() => handleBlur('mobile')}
-              value={formData.mobile} 
-              placeholder="10 digit number"
-              maxLength="10"
-            />
-            {touched.mobile && errors.mobile && <div className="invalid-feedback">{errors.mobile}</div>}
-          </div>
+            <div className="auth-card">
+              <form onSubmit={handleSubmit}>
+                <div className="row g-3">
+                  {/* Name */}
+                  <div className="col-md-6">
+                    <label className="auth-label">Full Name</label>
+                    <input 
+                      name="name" 
+                      type="text" 
+                      className={`form-control ${touched.name && errors.name ? 'is-invalid' : ''} ${touched.name && !errors.name && formData.name ? 'is-valid' : ''}`}
+                      onChange={handleChange}
+                      onBlur={() => handleBlur('name')}
+                      value={formData.name} 
+                      placeholder="Enter full name"
+                      required
+                    />
+                    {touched.name && errors.name && <div className="invalid-feedback d-block mt-1">{errors.name}</div>}
+                  </div>
 
-          
+                  {/* Email */}
+                  <div className="col-md-6">
+                    <label className="auth-label">Email Address</label>
+                    <input 
+                      name="email" 
+                      type="email" 
+                      className={`form-control ${touched.email && errors.email ? 'is-invalid' : ''} ${touched.email && !errors.email && formData.email ? 'is-valid' : ''}`}
+                      onChange={handleChange}
+                      onBlur={() => handleBlur('email')}
+                      value={formData.email} 
+                      placeholder="name@example.com"
+                      required
+                    />
+                    {touched.email && errors.email && <div className="invalid-feedback d-block mt-1">{errors.email}</div>}
+                  </div>
 
-          {/* Country — data: country-state-city; search: react-select (isSearchable) */}
-          <div className="col-md-4">
-            <label className="form-label" htmlFor="register-country">
-              Country
-            </label>
-            <Select
-              inputId="register-country"
-              instanceId="register-country"
-              options={countryOptions}
-              value={countrySelectValue}
-              onChange={handleCountrySelect}
-              onBlur={() => handleBlur('country')}
-              placeholder="Search or select country"
-              isClearable
-              isSearchable
-              styles={countrySelectStyles}
-              menuPortalTarget={document.body}
-              menuPosition="fixed"
-              noOptionsMessage={() => 'No countries match'}
-            />
-            {touched.country && errors.country && (
-              <div className="invalid-feedback d-block">{errors.country}</div>
-            )}
-          </div>
+                  {/* Password */}
+                  <div className="col-md-6">
+                    <label className="auth-label">Password</label>
+                    <div className="input-group">
+                      <input 
+                        name="password" 
+                        type={showPassword ? 'text' : 'password'} 
+                        className={`form-control ${touched.password && errors.password ? 'is-invalid' : ''} ${touched.password && !errors.password && formData.password ? 'is-valid' : ''}`}
+                        onChange={handleChange}
+                        onBlur={() => handleBlur('password')}
+                        value={formData.password} 
+                        placeholder="Min 6 characters"
+                        required
+                      />
+                      <button 
+                        className="btn btn-outline-secondary" 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{ borderTopRightRadius: '0.375rem', borderBottomRightRadius: '0.375rem' }}
+                      >
+                        <i className={`bi bi-eye${showPassword ? '-slash' : ''}`}></i>
+                      </button>
+                    </div>
+                    {touched.password && errors.password && <div className="invalid-feedback d-block mt-1">{errors.password}</div>}
+                  </div>
 
-          {/* State */}
-          <div className="col-md-4">
-            <label className="form-label" htmlFor="register-state">
-              State
-            </label>
-            <Select
-              inputId="register-state"
-              instanceId="register-state"
-              options={stateOptions}
-              value={stateSelectValue}
-              onChange={handleStateSelect}
-              onBlur={() => handleBlur('state')}
-              placeholder={
-                countryIso ? 'Search or select state' : 'Select a country first'
-              }
-              isDisabled={!countryIso}
-              isClearable
-              isSearchable
-              styles={stateSelectStyles}
-              menuPortalTarget={document.body}
-              menuPosition="fixed"
-              noOptionsMessage={() =>
-                countryIso ? 'No states match' : 'Pick a country first'
-              }
-            />
-            {touched.state && errors.state && (
-              <div className="invalid-feedback d-block">{errors.state}</div>
-            )}
-          </div>
+                  {/* Mobile */}
+                  <div className="col-md-6">
+                    <label className="auth-label">Mobile Number</label>
+                    <input 
+                      name="mobile" 
+                      type="text" 
+                      className={`form-control ${touched.mobile && errors.mobile ? 'is-invalid' : ''} ${touched.mobile && !errors.mobile && formData.mobile ? 'is-valid' : ''}`}
+                      onChange={handleChange}
+                      onBlur={() => handleBlur('mobile')}
+                      value={formData.mobile} 
+                      placeholder="10-digit number"
+                      maxLength="10"
+                      required
+                    />
+                    {touched.mobile && errors.mobile && <div className="invalid-feedback d-block mt-1">{errors.mobile}</div>}
+                  </div>
 
-          {/* City */}
-          <div className="col-md-4">
-            <label className="form-label" htmlFor="register-city">
-              City
-            </label>
-            <Select
-              inputId="register-city"
-              instanceId="register-city"
-              options={cityOptions}
-              value={citySelectValue}
-              onChange={handleCitySelect}
-              onBlur={() => handleBlur('city')}
-              placeholder={
-                stateIso ? 'Search or select city' : 'Select a state first'
-              }
-              isDisabled={!stateIso}
-              isClearable
-              isSearchable
-              styles={citySelectStyles}
-              menuPortalTarget={document.body}
-              menuPosition="fixed"
-              noOptionsMessage={() =>
-                stateIso ? 'No cities match' : 'Pick a state first'
-              }
-            />
-            {touched.city && errors.city && (
-              <div className="invalid-feedback d-block">{errors.city}</div>
-            )}
-          </div>
+                  {/* Country */}
+                  <div className="col-md-4">
+                    <label className="auth-label" htmlFor="register-country">
+                      Country
+                    </label>
+                    <Select
+                      inputId="register-country"
+                      instanceId="register-country"
+                      options={countryOptions}
+                      value={countrySelectValue}
+                      onChange={handleCountrySelect}
+                      onBlur={() => handleBlur('country')}
+                      placeholder="Search country"
+                      isClearable
+                      isSearchable
+                      styles={countrySelectStyles}
+                      menuPortalTarget={document.body}
+                      menuPosition="fixed"
+                      noOptionsMessage={() => 'No countries match'}
+                    />
+                    {touched.country && errors.country && (
+                      <div className="invalid-feedback d-block mt-1">{errors.country}</div>
+                    )}
+                  </div>
 
-          {/* Address */}
-          <div className="col-12">
-            <label className="form-label">Address</label>
-            <textarea 
-              name="address" 
-              rows="2" 
-              className={`form-control ${touched.address && errors.address ? 'is-invalid' : ''} ${touched.address && !errors.address && formData.address ? 'is-valid' : ''}`}
-              onChange={handleChange}
-              onBlur={() => handleBlur('address')}
-              value={formData.address}
-              placeholder="Street, locality, etc."
-            ></textarea>
-            {touched.address && errors.address && <div className="invalid-feedback">{errors.address}</div>}
-          </div>
+                  {/* State */}
+                  <div className="col-md-4">
+                    <label className="auth-label" htmlFor="register-state">
+                      State
+                    </label>
+                    <Select
+                      inputId="register-state"
+                      instanceId="register-state"
+                      options={stateOptions}
+                      value={stateSelectValue}
+                      onChange={handleStateSelect}
+                      onBlur={() => handleBlur('state')}
+                      placeholder={
+                        countryIso ? 'Search state' : 'Pick country first'
+                      }
+                      isDisabled={!countryIso}
+                      isClearable
+                      isSearchable
+                      styles={stateSelectStyles}
+                      menuPortalTarget={document.body}
+                      menuPosition="fixed"
+                      noOptionsMessage={() =>
+                        countryIso ? 'No states match' : 'Pick country first'
+                      }
+                    />
+                    {touched.state && errors.state && (
+                      <div className="invalid-feedback d-block mt-1">{errors.state}</div>
+                    )}
+                  </div>
 
-          {/* Gender */}
-          <div className="col-md-6">
-            <label className="form-label">Gender *</label>
-            <div className="d-flex gap-3 pt-2">
-              <label><input type="radio" name="gender" value="male" checked={formData.gender === 'male'} onChange={handleChange} /> Male</label>
-              <label><input type="radio" name="gender" value="female" checked={formData.gender === 'female'} onChange={handleChange} /> Female</label>
+                  {/* City */}
+                  <div className="col-md-4">
+                    <label className="auth-label" htmlFor="register-city">
+                      City
+                    </label>
+                    <Select
+                      inputId="register-city"
+                      instanceId="register-city"
+                      options={cityOptions}
+                      value={citySelectValue}
+                      onChange={handleCitySelect}
+                      onBlur={() => handleBlur('city')}
+                      placeholder={
+                        stateIso ? 'Search city' : 'Pick state first'
+                      }
+                      isDisabled={!stateIso}
+                      isClearable
+                      isSearchable
+                      styles={citySelectStyles}
+                      menuPortalTarget={document.body}
+                      menuPosition="fixed"
+                      noOptionsMessage={() =>
+                        stateIso ? 'No cities match' : 'Pick state first'
+                      }
+                    />
+                    {touched.city && errors.city && (
+                      <div className="invalid-feedback d-block mt-1">{errors.city}</div>
+                    )}
+                  </div>
+
+                  {/* Address */}
+                  <div className="col-12">
+                    <label className="auth-label">Office Address</label>
+                    <textarea 
+                      name="address" 
+                      rows="2" 
+                      className={`form-control ${touched.address && errors.address ? 'is-invalid' : ''} ${touched.address && !errors.address && formData.address ? 'is-valid' : ''}`}
+                      onChange={handleChange}
+                      onBlur={() => handleBlur('address')}
+                      value={formData.address}
+                      placeholder="Street, locality, building, etc."
+                      required
+                    ></textarea>
+                    {touched.address && errors.address && <div className="invalid-feedback d-block mt-1">{errors.address}</div>}
+                  </div>
+
+                  {/* Gender */}
+                  <div className="col-md-6">
+                    <label className="auth-label">Gender</label>
+                    <div className="d-flex gap-3 pt-2 text-light">
+                      <label className="d-flex align-items-center gap-1 cursor-pointer">
+                        <input type="radio" name="gender" value="male" checked={formData.gender === 'male'} onChange={handleChange} /> Male
+                      </label>
+                      <label className="d-flex align-items-center gap-1 cursor-pointer">
+                        <input type="radio" name="gender" value="female" checked={formData.gender === 'female'} onChange={handleChange} /> Female
+                      </label>
+                    </div>
+                    {touched.gender && errors.gender && <div className="text-danger small mt-1">{errors.gender}</div>}
+                  </div>
+
+                  {/* Role */}
+                  <div className="col-md-6">
+                    <label className="auth-label">User Role</label>
+                    <select 
+                      name="role" 
+                      className={`form-select ${touched.role && errors.role ? 'is-invalid' : ''} ${touched.role && !errors.role && formData.role ? 'is-valid' : ''}`}
+                      onChange={handleChange}
+                      onBlur={() => handleBlur('role')}
+                      value={formData.role}
+                      required
+                    >
+                      <option value="">Select Role</option>
+                      <option value="contractor">Contractor (Bidder)</option>
+                      <option value="government">Government Official</option>
+                    </select>
+                    {touched.role && errors.role && <div className="invalid-feedback d-block mt-1">{errors.role}</div>}
+                  </div>
+                </div>
+
+                <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+                  {isSubmitting ? 'Creating Account...' : 'Register Now'}
+                </button>
+              </form>
+
+              <div className="auth-footer-text">
+                Already have an account? 
+                <Link to="/login" className="auth-footer-link">Sign In</Link>
+              </div>
             </div>
-            {touched.gender && errors.gender && <div className="text-danger small mt-1">{errors.gender}</div>}
-          </div>
-
-          {/* Role */}
-          <div className="col-md-6">
-            <label className="form-label">Role *</label>
-            <select 
-              name="role" 
-              className={`form-control ${touched.role && errors.role ? 'is-invalid' : ''} ${touched.role && !errors.role && formData.role ? 'is-valid' : ''}`}
-              onChange={handleChange}
-              onBlur={() => handleBlur('role')}
-              value={formData.role}
-            >
-              <option value="">Select Role</option>
-              <option value="contractor">Contractor (Bidder)</option>
-              <option value="government">Government Official</option>
-            </select>
-            {touched.role && errors.role && <div className="invalid-feedback">{errors.role}</div>}
-          </div>
-
-          {/* Submit */}
-          <div className="col-12 text-center mt-4">
-            <button type="submit" className="btn btn-primary px-5 py-2 fw-bold" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating Account...' : 'Register Now'}
-            </button>
           </div>
         </div>
-      </form>
+
+        <div className="auth-hero-side">
+          <div className="auth-grid-overlay"></div>
+          <div className="auth-blob auth-blob-1"></div>
+          <div className="auth-blob auth-blob-2"></div>
+          <div className="auth-blob auth-blob-3"></div>
+
+          <div className="auth-hero-content">
+            <div className="auth-badge-icon">
+              <i className="bi bi-shield-lock"></i>
+            </div>
+            <h2 className="auth-hero-title">Official e-Bidding Portal</h2>
+            <p className="auth-hero-desc">
+              Register to participate in government bidding and contracting opportunities. Access secure contractor dashboards, track applications in real-time, and manage postings under official oversight.
+            </p>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

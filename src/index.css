@@ -1,13 +1,13 @@
-/* Dark theme variables */
+/* Government-inspired dark theme variables */
 :root {
-  --color-bg: #181a1b;
-  --color-bg-secondary: #23272b;
-  --color-text: #f1f3f4;
-  --color-primary: #007bff;
-  --color-accent: #ffc107;
-  --color-border: #343a40;
-  --color-card: #23272b;
-  --color-hover: #212529;
+  --color-bg: #090d16;          /* Deep Navy-Black */
+  --color-bg-secondary: #111726;/* Slate Navy */
+  --color-text: #f1f5f9;        /* Light slate gray */
+  --color-primary: #1d4ed8;     /* Royal Blue */
+  --color-accent: #f97316;      /* Saffron Orange */
+  --color-border: #1e293b;      /* Slate Border */
+  --color-card: #111726;        /* Card Background */
+  --color-hover: #1e293b;       /* Hover Slate */
 }
 
 body {
@@ -25,7 +25,7 @@ a:hover, .btn-link:hover {
   color: var(--color-accent);
 }
 
-.card, .navbar, .footer {
+.card, .navbar {
   background: var(--color-card) !important;
   color: var(--color-text) !important;
   border-color: var(--color-border) !important;
